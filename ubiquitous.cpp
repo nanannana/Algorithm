@@ -27,7 +27,7 @@ int search(vector<vector<int> > group, int a) {
 int main(void)
 {
 	int a,b,g, groupSize=-1;
-	vector<pair<int, int> > v;
+	vector<int > v;
 	vector<vector<int> > group;
 
 	result = 0;
@@ -43,9 +43,12 @@ int main(void)
 			groupSize++;
 			group.push_back(vector<int>());
 			group[groupSize].push_back(a);
-			group[groupSize].push_back(b);
 			array[a] = 1;
-			array[b] = 1;
+			
+			if(a != b){
+				group[groupSize].push_back(b);
+				array[b] = 1;
+			}
 		}
 		else if(array[a] - array[b] < 0)
 		{
@@ -78,10 +81,25 @@ int main(void)
 		
 	}
 
-	printf("\n\n");
 	for(int i=0; i< group.size(); i++)
 	{
 		result += group[i].size();
+		if(M==100000) {
+			for(int j=0; j<group[i].size(); j++)
+			{
+				v.push_back(group[i][j]);
+			}
+		}
 	}
-	printf("result : %d\n", groupSize + 1+  N-result);
+	if(M==100000)
+	{
+		sort(v.begin(), v.end());
+		for(int i=0; i<v.size()-1; i++)
+		{
+			if(v[i] == v[i+1])
+				printf("%d\n", v[i]);
+		}
+	}
+	printf("%d", groupSize + 1+  N-result);
+
 }
