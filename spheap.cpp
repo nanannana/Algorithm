@@ -1,65 +1,80 @@
 #include<stdio.h>
-#include<queue>
 #include<string.h>
-#include<algorithm>
-#include<utility>
+#include<queue>
+#include<vector>
+#include<climits>
 using namespace std;
-
-class node{
-public:
-	int distance;
-	pair<int, int> loc;
-
-	node(int distance, pair<int, int> a)
-	{
-		this -> distance = distance;
-		loc = a;
-	}
-
-	bool operator<(const node & n) const{
-		return distance > n.distance;
-	}
-};
-
-
-int input[201][201];
+int map[201][201];
+int save[201][201];
+int start[3];
+int end[3];
 int N,M;
-int a,b;
 int result;
+
+priority_queue<vector<int>,  vector<vector<int> > ,greater<vector<int> > > q;
+
+void DaehoPush(int i, int j, int distance)
+{
+	if(save[i][j] <= distance)
+		return;
+	save[i][j] = distance;
+	vector<int> v;
+	v.push_back(distance);
+	v.push_back(i);
+	v.push_back(j);
+	q.push(v);
+}
+
+int isend(int i, int j)
+{
+	return ( (i == end[1]) && (j == end[2]) );
+}
+
+void hi(vector<int> temp)
+{
+	int i = temp[1];
+	int j = temp[2];
+	int dis = temp[0];
+	if(i < N && i > 0)
+		DaehoPush(i+1 , j, dis + map[i+1][j]);
+	if(i > 1 && i <= N)
+		DaehoPush(i-1, j, dis + map[i-1][j]);
+	if(j < M && j > 0)
+		DaehoPush(i, j+1, dis + map[i][j+1]);
+	if(j > 1 && j <= M)
+		DaehoPush(i, j-1, dis + map[i][j-1]);
+}
 
 int main(void)
 {
-	pair<int ,int> start;
-	pair<int ,int> end;
-	priority_queue <node, vector<node>, less<node> > q;
-	int a,b;
-
-	scanf("%d", &N);
-	scanf("%d", &M);
+	vector<int> temp;
+	result = INT_MAX;
+	scanf("%d%d", &N, &M);
 	for(int i=1; i<= N; i++)
 	{
 		for(int j=1; j<=M; j++)
 		{
-			scanf("%d", &input[i][j]);
+			scanf("%d", &map[i][j]);
+			save[i][j] = INT_MAX;
 		}
 	}
-	scanf("%d%d", &a,&b);
-	start=make_pair(a,b);
-	printf("stawrt: %d %d \n" ,a ,b);
+	scanf("%d%d", &start[1], &start[2]);
+	scanf("%d%d", &end[1], &end[2]);
 
-
-	scanf("%d%d", &a,&b);
-	end=make_pair(a,b);
-	
-	q.push(node( input[start.first][start.second] , start));
-	node temp = q.top();
+	DaehoPush(start[1], start[2], map[start[1]][start[2]]);
+	save[start[1]][start[2]] = map[start[1]][start[2]];
 	while(!q.empty())
 	{
+		temp = q.top();
+		printf("i : %d / j : %d / distance: %d\n", temp[1], temp[2], temp[0]);
 		q.pop();
-		if(temp.loc == end){
-			if(temp.distance > result)
-				result = temp.distance;
+		if(temp[1] == end[1] && temp[2] == end[2])
+		{
+			result = temp[0];
+			break;
 		}
-		
+		hi(temp);
 	}
+	printf("%d\n", result);
 }
+
