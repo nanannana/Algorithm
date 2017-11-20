@@ -68,10 +68,7 @@ int main(void)
 			int k = search(group,b);
 			if(g != k)
 			{
-				for(int j=0; j< group[k].size(); j++)
-				{
-					group[g].push_back(group[k][j]);
-				}
+				group[g].insert(group[g].end(),group[k].begin(), group[k].end());
 				group.erase(group.begin() + k);
 				groupSize--;
 			}
@@ -84,21 +81,6 @@ int main(void)
 	for(int i=0; i< group.size(); i++)
 	{
 		result += group[i].size();
-		if(M==100000) {
-			for(int j=0; j<group[i].size(); j++)
-			{
-				v.push_back(group[i][j]);
-			}
-		}
-	}
-	if(M==100000)
-	{
-		sort(v.begin(), v.end());
-		for(int i=0; i<v.size()-1; i++)
-		{
-			if(v[i] == v[i+1])
-				printf("%d\n", v[i]);
-		}
 	}
 	printf("%d", groupSize + 1+  N-result);
 
