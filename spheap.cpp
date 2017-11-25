@@ -25,11 +25,6 @@ void DaehoPush(int i, int j, int distance)
 	q.push(v);
 }
 
-int isend(int i, int j)
-{
-	return ( (i == end[1]) && (j == end[2]) );
-}
-
 void hi(vector<int> temp)
 {
 	int i = temp[1];

@@ -6,82 +6,61 @@
 #include<iostream>
 
 using namespace std;
-int array[500001];
+int parent[50001];
+int level[50001];
 int N;
 int M;
 int result;
 
-int search(vector<vector<int> > group, int a) {
-
-	for(int i=0; i<group.size(); i++)
+void set(){
+	for(int i=1; i<=N; i++)
 	{
-		for(int j=0; j< group[i].size(); j++)
-		{
-			if(group[i][j] == a)
-				return i;
-		}
+		parent[i] = i;
+		level[i] = 1;
 	}
-	return -1;
+}
+
+int find(int a) {
+	while(a != parent[a])
+	{
+		a = parent[a];
+	}
+	return a;
 }
 
 int main(void)
 {
-	int a,b,g, groupSize=-1;
-	vector<int > v;
-	vector<vector<int> > group;
-
-	result = 0;
-	memset(array, 0 , sizeof(array));
+	int a,b, u, v, temp;
 
 	scanf("%d%d", &N, &M);
 	
+	set();
 	for(int i=1; i<=M; i++)
 	{
 		scanf("%d%d", &a, &b);
-		if(array[a]==0 && array[b] == 0)
-		{
-			groupSize++;
-			group.push_back(vector<int>());
-			group[groupSize].push_back(a);
-			array[a] = 1;
-			
-			if(a != b){
-				group[groupSize].push_back(b);
-				array[b] = 1;
-			}
-		}
-		else if(array[a] - array[b] < 0)
-		{
-			g= search(group, b);
-			group[g].push_back(a);
-			array[a] = 1;
-		}
-		else if(array[a] -  array[b] > 0)
-		{
-			g = search(group, a);
-			group[g].push_back(b);
-			array[b] = 1;
-		}
-		else
-		{
-			g = search(group, a);
-			int k = search(group,b);
-			if(g != k)
+		u = find(a);
+		v = find(b);
+		if(u == v)
+			continue;
+		else {
+			if(u > v)
 			{
-				group[g].insert(group[g].end(),group[k].begin(), group[k].end());
-				group.erase(group.begin() + k);
-				groupSize--;
+				temp = u;
+				u = v;
+				v = temp;
 			}
-			else
-				;
+
+			parent[u] = v;
+
+			if(level[u] == level[v])
+				level[u]++;
 		}
-		
 	}
-
-	for(int i=0; i< group.size(); i++)
+	for(int i=1; i<=N; i++)
 	{
-		result += group[i].size();
+		if(parent[i] == i)
+			result++;
 	}
-	printf("%d", groupSize + 1+  N-result);
 
+	printf("%d" ,result);
 }
